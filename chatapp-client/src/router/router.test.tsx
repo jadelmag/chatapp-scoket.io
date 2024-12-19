@@ -12,7 +12,7 @@ vi.mock("@/auth/authcontext", async () => {
   const actual = await import("@/auth/authcontext");
   return {
     ...actual,
-    useAuthContext: vi.fn(), // Mockeamos el hook para sobrescribirlo en cada test
+    useAuthContext: vi.fn(),
   };
 });
 

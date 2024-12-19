@@ -1,23 +1,54 @@
 import { AuthProvider } from "@/auth/authcontext";
 import { ChatItem } from "@/components/chatitem/chatitem";
-import { ChatProvider } from "@/context/chatcontext";
+import { ChatProvider, useChatContext } from "@/context/chatcontext";
+import { CHAT_TYPE } from "@/reducers/chatreducer";
+import { requestWithToken } from "@/services/requests.functions";
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-describe("ChatItem Component", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+vi.mock("@/context/chatcontext", async () => {
+  const actual = await import("@/context/chatcontext");
+  return {
+    ...actual,
+    useChatContext: vi.fn(),
+  };
+});
 
+vi.mock("@/services/requests.functions", async () => ({
+  ...(await vi.importActual("@/services/requests.functions")),
+  __esModule: true,
+  requestWithToken: vi.fn(() => Promise.resolve({ ok: true, messages: [] })),
+}));
+
+describe("ChatItem Component", () => {
+  const dispatchMock = vi.fn();
   const mockUser = {
-    uid: "user123",
-    name: "Test User",
+    uid: "123",
+    name: "John Doe",
     email: "test@test.com",
     online: true,
   };
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
   it("should render user data correctly", () => {
+    vi.mocked(useChatContext).mockReturnValue({
+      chatState: {
+        uid: "",
+        activeChat: null,
+        users: [],
+        messages: [],
+      },
+      dispatch: dispatchMock,
+    });
+
     render(
       <ChatProvider>
         <AuthProvider>
@@ -26,12 +57,26 @@ describe("ChatItem Component", () => {
       </ChatProvider>
     );
 
-    expect(screen.getByText("Test User")).toBeInTheDocument();
-    expect(screen.getByText("Online")).toBeInTheDocument();
-    expect(screen.getByAltText("sunil")).toBeInTheDocument();
+    const name = screen.getByText("John Doe");
+    const status = screen.getByText("Online");
+    const image = screen.getByRole("img");
+
+    expect(name).toBeInTheDocument();
+    expect(status).toBeInTheDocument();
+    expect(image).toBeInTheDocument();
   });
 
   it("should not apply 'active_chat' class when user is not the active chat", () => {
+    vi.mocked(useChatContext).mockReturnValue({
+      chatState: {
+        uid: "",
+        activeChat: null,
+        users: [],
+        messages: [],
+      },
+      dispatch: dispatchMock,
+    });
+
     const { container } = render(
       <ChatProvider>
         <AuthProvider>
@@ -44,49 +89,108 @@ describe("ChatItem Component", () => {
     expect(chatItem).not.toHaveClass("active_chat");
   });
 
-  //   it("should apply 'active_chat' class when user is the active chat", () => {
-  //     const { container } = render(
-  //       <ChatProvider>
-  //         <AuthProvider>
-  //           <ChatItem user={mockUser} />
-  //         </AuthProvider>
-  //       </ChatProvider>
-  //     );
+  it("should apply 'active_chat' class when user is the active chat", () => {
+    vi.mocked(useChatContext).mockReturnValue({
+      chatState: {
+        uid: "11111",
+        activeChat: "123",
+        users: [],
+        messages: [],
+      },
+      dispatch: vi.fn(),
+    });
 
-  //     const chatItem = container.querySelector(".chat_list");
-  //     expect(chatItem).toHaveClass("active_chat");
-  //   });
+    const { container } = render(
+      <ChatProvider>
+        <AuthProvider>
+          <ChatItem user={mockUser} />
+        </AuthProvider>
+      </ChatProvider>
+    );
 
-  //     (requestWithToken as vi.Mock).mockResolvedValueOnce({
-  //       ok: false,
-  //     });
+    const chatItem = container.querySelector(".chat_list");
+    expect(chatItem).toHaveClass("active_chat");
+  });
 
-  //     render(<ChatItem user={mockUser} />);
+  it("should call dispatch when user click", async () => {
+    vi.mocked(useChatContext).mockReturnValue({
+      chatState: {
+        uid: "111",
+        activeChat: null,
+        users: [
+          {
+            uid: "123",
+            name: "John Doe",
+            email: "test@test.com",
+            online: true,
+          },
+        ],
+        messages: [],
+      },
+      dispatch: dispatchMock,
+    });
 
-  //     const chatItem = screen.getByText("Test User");
+    render(
+      <ChatProvider>
+        <AuthProvider>
+          <ChatItem user={mockUser} />
+        </AuthProvider>
+      </ChatProvider>
+    );
 
-  //     await fireEvent.click(chatItem);
+    const wrapperDiv = screen.getByLabelText("chat-item");
+    expect(wrapperDiv).toBeInTheDocument();
 
-  //     // Verificar SELECT_CHAT
-  //     expect(mockDispatch).toHaveBeenCalledWith({
-  //       type: CHAT_TYPE.SELECT_CHAT,
-  //       payload: "user123",
-  //     });
+    fireEvent.click(wrapperDiv);
 
-  //     // Verificar llamada a requestWithToken
-  //     expect(requestWithToken).toHaveBeenCalledWith("messages/user123");
+    expect(dispatchMock).toHaveBeenCalledWith({
+      type: "SELECT_CHAT",
+      payload: mockUser.uid,
+    });
 
-  //     // No debería haber ADD_MESSAGES ya que la respuesta no es válida
-  //     expect(mockDispatch).not.toHaveBeenCalledWith(
-  //       expect.objectContaining({ type: CHAT_TYPE.ADD_MESSAGES })
-  //     );
-  //   });
+    expect(vi.mocked(requestWithToken)).toHaveBeenCalledWith(
+      `messages/${mockUser.uid}`
+    );
+  });
 
-  //   it("should display offline status when user is offline", () => {
-  //     const offlineUser = { ...mockUser, online: false };
-  //     render(<ChatItem user={offlineUser} />);
+  it("should handle errors in onGetMessages", async () => {
+    vi.mocked(useChatContext).mockReturnValue({
+      chatState: {
+        uid: "111",
+        activeChat: null,
+        users: [
+          {
+            uid: "123",
+            name: "John Doe",
+            email: "test@test.com",
+            online: true,
+          },
+        ],
+        messages: [],
+      },
+      dispatch: dispatchMock,
+    });
 
-  //     expect(screen.getByText("Offline")).toBeInTheDocument();
-  //     expect(screen.queryByText("Online")).not.toBeInTheDocument();
-  //   });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (requestWithToken as any).mockRejectedValueOnce(new Error("Test Error"));
+
+    render(
+      <ChatProvider>
+        <AuthProvider>
+          <ChatItem user={mockUser} />
+        </AuthProvider>
+      </ChatProvider>
+    );
+
+    const chatItem = screen.getByLabelText("chat-item");
+    fireEvent.click(chatItem);
+
+    expect(requestWithToken).toHaveBeenCalledWith(`messages/${mockUser.uid}`);
+    expect(dispatchMock).toHaveBeenCalledWith({
+      type: CHAT_TYPE.SELECT_CHAT,
+      payload: mockUser.uid,
+    });
+  
+  });
 });
+
