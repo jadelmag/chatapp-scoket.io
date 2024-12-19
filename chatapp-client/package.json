@@ -8,8 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest --silent",
-    "coverage": "vitest run --coverage --silent"
+    "test": "vitest",
+    "test:silent": "vitest --silent",
+    "coverage": "vitest run --coverage",
+    "coverage:silent": "vitest run --coverage --silent"
   },
   "dependencies": {
     "moment": "^2.30.1",

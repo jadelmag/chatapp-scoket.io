@@ -14,7 +14,7 @@ export const SideBar = () => {
         .map((user: User) => (
           <ChatItem key={user.uid} user={user} />
         ))}
-      <div className="extra_space"></div>
+      <div aria-label="extra-space" className="extra_space"></div>
     </div>
   );
 };
