@@ -28,7 +28,7 @@ export const SendMessage = () => {
   };
 
   return (
-    <form onSubmit={onHandleSubmit}>
+    <form role="form" onSubmit={onHandleSubmit}>
       <div className="type_msg row">
         <div className="input_msg_write col-sm-9">
           <input
@@ -41,7 +41,7 @@ export const SendMessage = () => {
         </div>
         <div className="col-sm-3 text-center">
           <button className="msg_send_btn mt-3" type="submit">
-            enviar
+            Enviar
           </button>
         </div>
       </div>
