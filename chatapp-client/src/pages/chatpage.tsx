@@ -1,6 +1,6 @@
-import { Conversation } from "@/components/conversation";
-import { InboxPeople } from "@/components/inboxpeople";
-import { SelectChat } from "@/components/selectchat";
+import { Conversation } from "@/components/conversation/conversation";
+import { InboxPeople } from "@/components/inboxpeople/inboxpeople";
+import { SelectChat } from "@/components/selectchat/selectchat";
 import { useChatContext } from "@/context/chatcontext";
 import "../css/chat.css";
 

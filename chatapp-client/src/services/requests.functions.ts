@@ -24,7 +24,7 @@ export const requestWithOutToken = async (
     const resp = await fetch(url, {
       method: method,
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
       },
       body: body,
     });
@@ -51,7 +51,7 @@ export const requestWithToken = async (
       method: method,
       headers: {
         "x-token": token,
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
       } as any,
     });
     return await resp.json();

@@ -5,14 +5,14 @@ import {
   removeItemOnLocalStorage,
   saveOnLocalStorage,
 } from "@/helpers/localstorage.functions";
-import {
-  requestWithOutToken,
-  requestWithToken,
-} from "@/helpers/requests.functions";
 import { LoginResponse } from "@/interfaces/login.interfaces";
 import { RenewTokenResponse } from "@/interfaces/renewtoken.interface";
 import { SigninResponse } from "@/interfaces/signin.interfaces";
 import { CHAT_TYPE } from "@/reducers/chatreducer";
+import {
+  requestWithOutToken,
+  requestWithToken,
+} from "@/services/requests.functions";
 import React, {
   createContext,
   ReactNode,

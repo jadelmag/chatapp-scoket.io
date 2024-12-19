@@ -1,5 +1,5 @@
 import { useAuthContext } from "@/auth/authcontext";
-import { ChatItem } from "@/components/chatitem";
+import { ChatItem } from "@/components/chatitem/chatitem";
 import { useChatContext } from "@/context/chatcontext";
 import { User } from "@/interfaces/user.interfaces";
 

@@ -1,7 +1,7 @@
 import { useAuthContext } from "@/auth/authcontext";
-import { IncomingMessage } from "@/components/incomingmessage";
-import { OutcommingMessage } from "@/components/outcomingmessage";
-import { SendMessage } from "@/components/sendmessage";
+import { IncomingMessage } from "@/components/incomingmessage/incomingmessage";
+import { OutcommingMessage } from "@/components/outcomingmessage/outcomingmessage";
+import { SendMessage } from "@/components/sendmessage/sendmessage";
 import { useChatContext } from "@/context/chatcontext";
 import { animationToBottom } from "@/helpers/scroll.functions";
 import { Message } from "@/interfaces/message.interfaces";

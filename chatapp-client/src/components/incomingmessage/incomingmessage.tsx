@@ -8,14 +8,14 @@ interface IncomingMessageProps {
 
 export const IncomingMessage: React.FC<IncomingMessageProps> = ({ msg }) => {
   return (
-    <div className="incoming_msg">
+    <div aria-label="incoming_msg" className="incoming_msg">
       <div className="incoming_msg_img">
         <img src={UserPNG} alt="sunil" />
       </div>
       <div className="received_msg">
         <div className="received_withd_msg">
-          <p>{msg.message}</p>
-          <span className="time_date"> {hourMonth(msg.createdAt)}</span>
+          <p aria-label="message">{msg.message}</p>
+          <span className="time_date" aria-label="time_date"> {hourMonth(msg.createdAt)}</span>
         </div>
       </div>
     </div>

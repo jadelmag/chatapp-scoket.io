@@ -5,7 +5,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 export const AuthRouter = () => {
   return (
-    <div className="limiter">
+    <div id="limiter" aria-label="limiter" className="limiter">
       <div className="container-login100">
         <div className="wrap-login100 p-t-50 p-b-90">
           <Routes>
