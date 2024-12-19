@@ -28,18 +28,19 @@ export const ChatItem: React.FC<ChatItemProps> = ({ user }) => {
         console.log("Error al obtener mensajes");
       }
     } catch (error) {
-      console.log('Error: ', error);
+      console.log("Error: ", error);
     }
   }, [dispatch, user.uid]);
 
   const onHandleClick = useCallback(() => {
+    if (user.uid === activeChat) return;
     dispatch({
       type: CHAT_TYPE.SELECT_CHAT,
       payload: user.uid,
     });
 
     onGetMessages();
-  }, [dispatch, user.uid, onGetMessages]);
+  }, [dispatch, user.uid, activeChat, onGetMessages]);
 
   const activeClass = user.uid === activeChat ? "active_chat" : "";
   return (
