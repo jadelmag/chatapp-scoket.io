@@ -31,12 +31,6 @@ const useSocket = (serverPath: string) => {
       console.log("socket connected");
       setOnline(true);
     });
-    return () => {
-      socket?.off("connect", () => {
-        console.log("socket connect off");
-        setOnline(false);
-      });
-    };
   }, [socket]);
 
   useEffect(() => {
@@ -44,12 +38,6 @@ const useSocket = (serverPath: string) => {
       console.log("socket disconnected");
       setOnline(false);
     });
-    return () => {
-      socket?.off("disconnect", () => {
-        console.log("socket disconnect off");
-        setOnline(false);
-      });
-    };
   }, [socket]);
 
   return { socket, online, connectSocket, disconnectSocket };

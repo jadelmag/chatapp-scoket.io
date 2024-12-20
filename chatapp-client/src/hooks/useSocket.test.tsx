@@ -7,7 +7,17 @@ import { beforeEach, describe, it, vi } from "vitest";
 vi.mock("@/helpers/localstorage.functions", async () => ({
   ...(await vi.importActual("@/helpers/localstorage.functions")),
   __esModule: true,
-  loadOnLocalStorage: vi.fn(() => "11222"),
+  loadOnLocalStorage: vi.fn(() => "token-valid"),
+}));
+
+const mockSocket = {
+  on: vi.fn(),
+  emit: vi.fn(),
+  disconnect: vi.fn(),
+};
+
+vi.mock("socket.io-client", () => ({
+  io: vi.fn(() => mockSocket),
 }));
 
 describe("useSocket", () => {
@@ -22,9 +32,7 @@ describe("useSocket", () => {
   );
 
   it("should initialize with default state", () => {
-    const { result } = renderHook(() => useSocket("/"), {
-      wrapper: wrapper,
-    });
+    const { result } = renderHook(() => useSocket("/"), { wrapper });
     const { online, socket, connectSocket, disconnectSocket } = result.current;
 
     expect(online).toBeFalsy();
@@ -33,21 +41,64 @@ describe("useSocket", () => {
     expect(disconnectSocket).toBeDefined();
   });
 
-  it("should connect", async () => {
-    const { result } = renderHook(() => useSocket("/"), {
-      wrapper: wrapper,
-    });
-    const { online, socket, connectSocket, disconnectSocket } = result.current;
+  it("should connect and update online state", async () => {
+    const { result } = renderHook(() => useSocket("/"), { wrapper });
+    const { connectSocket } = result.current;
 
     act(() => {
       connectSocket();
     });
 
-    await waitFor(() => {
-      expect(online).toBeFalsy();
-      expect(socket).toBeNull();
-      expect(connectSocket).toBeDefined();
-      expect(disconnectSocket).toBeDefined();
+    act(() => {
+      mockSocket.on.mock.calls.forEach(([event, callback]) => {
+        if (event === "connect") {
+          callback();
+        }
+      });
     });
+
+    await waitFor(() => {
+      expect(result.current.online).toBeTruthy();
+    });
+  });
+
+  it("should handle socket on connect event", async () => {
+    const { result } = renderHook(() => useSocket("/"), { wrapper });
+    const { connectSocket } = result.current;
+
+    act(() => {
+      connectSocket();
+    });
+
+    act(() => {
+      mockSocket.on.mock.calls.forEach(([event, callback]) => {
+        if (event === "connect") {
+          callback();
+        }
+      });
+    });
+
+    expect(mockSocket.on).toHaveBeenCalledWith("connect", expect.any(Function));
+    expect(result.current.online).toBeTruthy();
+  });
+
+  it("should handle socket on disconnect event", async () => {
+    const { result } = renderHook(() => useSocket("/"), { wrapper });
+    const { connectSocket } = result.current;
+
+    act(() => {
+      connectSocket();
+    });
+
+    act(() => {
+      mockSocket.on.mock.calls.forEach(([event, callback]) => {
+        if (event === "disconnect") {
+          callback();
+        }
+      });
+    });
+
+    expect(mockSocket.on).toHaveBeenCalledWith("disconnect", expect.any(Function));
+    expect(result.current.online).toBeFalsy();
   });
 });
