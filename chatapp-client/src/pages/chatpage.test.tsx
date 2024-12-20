@@ -1,10 +1,10 @@
 import { AuthProvider } from "@/auth/authcontext";
 import { ChatProvider, useChatContext } from "@/context/chatcontext";
 import { User } from "@/interfaces/user.interfaces";
+import { ChatPage } from "@/pages/chatpage";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { describe, it, vi } from "vitest";
-import { ChatPage } from "./chatpage";
 
 vi.mock("@/context/chatcontext", async () => {
   const actual = await import("@/context/chatcontext");

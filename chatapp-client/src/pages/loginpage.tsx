@@ -10,8 +10,8 @@ import Swal from "sweetalert2";
 import "../css/login-register.css";
 
 const initialState: LoginProps = {
-  email: "jdelgado@gmail.com",
-  password: "123456",
+  email: "",
+  password: "",
   rememberme: false,
 };
 
@@ -19,7 +19,6 @@ export const LoginPage = () => {
   const [form, setForm] = useState<LoginProps>(initialState);
 
   const { login } = useAuthContext();
-
 
   useEffect(() => {
     const email: string | null = loadOnLocalStorage(KEY.EMAIL);
@@ -70,6 +69,7 @@ export const LoginPage = () => {
 
       <div className="wrap-input100 validate-input mb-3">
         <input
+          aria-label="email"
           className="input100"
           type="email"
           name="email"
@@ -82,6 +82,7 @@ export const LoginPage = () => {
 
       <div className="wrap-input100 validate-input mb-3">
         <input
+          aria-label="password"
           className="input100"
           type="password"
           name="password"
@@ -93,8 +94,13 @@ export const LoginPage = () => {
       </div>
 
       <div className="row mb-3">
-        <div className="col" onClick={onHandleCheckbox}>
+        <div
+          aria-label="checkbox-area"
+          className="col"
+          onClick={onHandleCheckbox}
+        >
           <input
+            aria-label="checkbox"
             className="input-checkbox100"
             id="ckb1"
             type="checkbox"
@@ -114,6 +120,7 @@ export const LoginPage = () => {
 
       <div className="container-login100-form-btn m-t-17">
         <button
+          aria-label="submit-button"
           disabled={!allSuccess()}
           type="submit"
           className="login100-form-btn"
