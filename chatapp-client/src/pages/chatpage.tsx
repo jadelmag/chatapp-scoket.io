@@ -8,7 +8,7 @@ export const ChatPage = () => {
   const { chatState } = useChatContext();
 
   return (
-    <div className="messaging">
+    <div aria-label="messaging" className="messaging">
       <div className="inbox_msg">
         <InboxPeople />
 
