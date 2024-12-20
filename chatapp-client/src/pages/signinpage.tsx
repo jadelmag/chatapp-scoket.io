@@ -50,6 +50,7 @@ export const SigninPage = () => {
 
       <div className="wrap-input100 validate-input mb-3">
         <input
+          aria-label="name"
           className="input100"
           type="text"
           name="name"
@@ -62,6 +63,7 @@ export const SigninPage = () => {
 
       <div className="wrap-input100 validate-input mb-3">
         <input
+          aria-label="email"
           className="input100"
           type="email"
           name="email"
@@ -74,6 +76,7 @@ export const SigninPage = () => {
 
       <div className="wrap-input100 validate-input mb-3">
         <input
+          aria-label="password"
           className="input100"
           type="password"
           name="password"
@@ -94,6 +97,7 @@ export const SigninPage = () => {
 
       <div className="container-login100-form-btn m-t-17">
         <button
+          aria-label="submit-button"
           type="submit"
           disabled={!allSuccess()}
           className="login100-form-btn"
