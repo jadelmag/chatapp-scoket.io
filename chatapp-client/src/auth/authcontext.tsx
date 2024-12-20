@@ -9,10 +9,8 @@ import { LoginResponse } from "@/interfaces/login.interfaces";
 import { RenewTokenResponse } from "@/interfaces/renewtoken.interface";
 import { SigninResponse } from "@/interfaces/signin.interfaces";
 import { CHAT_TYPE } from "@/reducers/chatreducer";
-import {
-  requestWithOutToken,
-  requestWithToken,
-} from "@/services/requests.functions";
+import { requestWithToken } from "@/services/withtoken.functions";
+import { requestWithOutToken } from "@/services/witouttoken.functions";
 import React, {
   createContext,
   ReactNode,

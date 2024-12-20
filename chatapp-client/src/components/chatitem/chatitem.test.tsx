@@ -2,7 +2,7 @@ import { AuthProvider } from "@/auth/authcontext";
 import { ChatItem } from "@/components/chatitem/chatitem";
 import { ChatProvider, useChatContext } from "@/context/chatcontext";
 import { CHAT_TYPE } from "@/reducers/chatreducer";
-import { requestWithToken } from "@/services/requests.functions";
+import { requestWithToken } from "@/services/withtoken.functions";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -15,8 +15,8 @@ vi.mock("@/context/chatcontext", async () => {
   };
 });
 
-vi.mock("@/services/requests.functions", async () => ({
-  ...(await vi.importActual("@/services/requests.functions")),
+vi.mock("@/services/withtoken.functions", async () => ({
+  ...(await vi.importActual("@/services/withtoken.functions")),
   __esModule: true,
   requestWithToken: vi.fn(() => Promise.resolve({ ok: true, messages: [] })),
 }));

@@ -3,7 +3,7 @@ import { useChatContext } from "@/context/chatcontext";
 import { MessagesResponse } from "@/interfaces/getmessages.interfaces";
 import { User } from "@/interfaces/user.interfaces";
 import { CHAT_TYPE } from "@/reducers/chatreducer";
-import { requestWithToken } from "@/services/requests.functions";
+import { requestWithToken } from "@/services/withtoken.functions";
 import { useCallback } from "react";
 
 interface ChatItemProps {
